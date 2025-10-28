@@ -1,0 +1,19 @@
+#   Это мои личные файлы, так что тем, кто будет форкать (слабо в это 
+# верится) можно удалить из своего gitignore
+tmp/
+*pycache*/
+.mypy_cache
+
+test.py
+todo.txt
+
+
+# Cледующие строки ИМХО лучше оставить
+
+.git/
+#.gitignore
+
+.venv/
+ 
+.env/db.env
+.env/server.env
