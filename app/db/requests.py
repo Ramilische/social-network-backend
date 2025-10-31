@@ -73,6 +73,28 @@ class UserRepository:
                     'description': profile.description
                     }
             return result
+    
+    @classmethod
+    async def get_all_profiles(cls):
+        async with async_session() as session:
+            users = await session.scalars(select(User))
+            profiles = await session.scalars(select(Profile).join(User, Profile.user_id == User.id))
+            result = list()
+            for item in tuple(zip(users, profiles)):
+                user: User = item[0]
+                profile: Profile = item[1]
+                city = await session.scalar(select(City).where(City.id == profile.city_id))
+                result.append({
+                    'username': user.username if user else None,
+                    'name': profile.name,
+                    'surname': profile.surname,
+                    'photo_path': profile.photo_path,
+                    'city': city.name if city else None,
+                    'status': profile.status,
+                    'description': profile.description
+                    })
+                
+            return 200, result
 
 
 class PostRepository:

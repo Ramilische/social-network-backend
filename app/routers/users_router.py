@@ -37,3 +37,9 @@ async def profile(username: str):
     profile_info = await UserRepository.get_profile(username)
     headers = {'Access-Control-Allow-Origin': 'http://localhost:3000'}
     return JSONResponse(content=profile_info, headers=headers)
+
+
+@router.get('/allprofiles')
+async def all_profiles():
+    code, profile_info = await UserRepository.get_all_profiles()
+    return JSONResponse(status_code=code, content=profile_info)
