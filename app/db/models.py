@@ -100,7 +100,6 @@ class Post(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     author_id: Mapped[int] = mapped_column(ForeignKey('profiles.user_id'))
     author: Mapped['Profile'] = relationship(back_populates='posts')
-    title: Mapped[str] = mapped_column(String, nullable=True)
     content: Mapped[str] = mapped_column(Text, nullable=True)
     photo_path: Mapped[str] = mapped_column(String, nullable=True)
     create_time: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
