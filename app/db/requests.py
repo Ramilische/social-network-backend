@@ -76,6 +76,17 @@ class UserRepository:
 
 
 class PostRepository:
+    @staticmethod
+    def serialize_post(post: Post):
+        return {
+            'post': {
+                'author_id': post.author_id,
+                'content': post.content,
+                'photo_path': post.photo_path,
+                #'create_time': post.create_time
+                }
+            }
+    
     @classmethod
     async def add_post(cls, author_id: int, content: str = '', photo_path: str = ''):
         if content == '' and photo_path == '':
@@ -99,7 +110,7 @@ class PostRepository:
             if not post:
                 return 400, {'message': 'Post with this ID does not exist'}
             
-            return 200, {'post', post}
+            return 200, PostRepository.serialize_post(post=post)
     
     @classmethod
     async def user_posts(cls, user_id: int, start: int = 1, end: int = 100):
@@ -110,5 +121,5 @@ class PostRepository:
 
             posts = await session.scalars(select(Post).where(Post.author_id == user_id).limit(end))
             
-            return list(posts)[start - 1:]
+            return 200, list([PostRepository.serialize_post(post) for post in posts])[start - 1:]
             
