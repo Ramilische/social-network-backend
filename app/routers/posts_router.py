@@ -29,7 +29,7 @@ async def create_post(post: CreatePostSchema):
     return JSONResponse(status_code=code, content=message)
 
 
-@router.get('/show/{post_id}')
+@router.get('/show')
 async def show_post(post_id: int):
     code, post = await PostRepository.get_post(post_id=post_id)
     return JSONResponse(status_code=code, content=post)

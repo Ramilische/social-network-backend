@@ -7,6 +7,19 @@ from app.utils.password import hash_password, make_salt
 
 
 class UserRepository:
+    @staticmethod
+    def serialize_user(user: User | None, profile: Profile | None, city: City | None):
+        return {
+            'id': user.id if user else None,
+            'username': user.username if user else None,
+            'name': profile.name if profile else None,
+            'surname': profile.surname if profile else None,
+            'photo_path': profile.photo_path if profile else None,
+            'city': city.name if city else None,
+            'status': profile.status if profile else None,
+            'description': profile.description if profile else None
+            }
+    
     @classmethod
     async def add_user(cls, username: str, email: str, password: str, name: str):
         """
@@ -63,15 +76,7 @@ class UserRepository:
             city = await session.scalar(select(City).where(City.id == profile.city_id)) if profile else None
             result = dict()
             if profile:
-                result = {
-                    'username': user.username if user else None,
-                    'name': profile.name,
-                    'surname': profile.surname,
-                    'photo_path': profile.photo_path,
-                    'city': city.name if city else None,
-                    'status': profile.status,
-                    'description': profile.description
-                    }
+                result = UserRepository.serialize_user(user=user, profile=profile, city=city)
             return result
     
     @classmethod
@@ -84,15 +89,7 @@ class UserRepository:
                 user: User = item[0]
                 profile: Profile = item[1]
                 city = await session.scalar(select(City).where(City.id == profile.city_id))
-                result.append({
-                    'username': user.username if user else None,
-                    'name': profile.name,
-                    'surname': profile.surname,
-                    'photo_path': profile.photo_path,
-                    'city': city.name if city else None,
-                    'status': profile.status,
-                    'description': profile.description
-                    })
+                result.append(UserRepository.serialize_user(user=user, profile=profile, city=city))
                 
             return 200, result
 
